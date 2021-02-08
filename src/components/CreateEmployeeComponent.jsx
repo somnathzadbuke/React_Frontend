@@ -1,142 +1,115 @@
-import React, { Component } from 'react'
-import EmployeeService from '../services/EmployeeService';
+import React, { Component } from "react";
+import EmployeeService from "../services/EmployeeService";
 
 class CreateEmployeeComponent extends Component {
-    constructor(props) {
-        super(props)
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            // step 2
-            //id: this.props.match.params.id,
-            name: '',
-            mobile: '',
-            email: '',
-            company_name: '',
-            message:''
-        }
-        this.changenameHandler = this.changenameHandler.bind(this);
-        this.changemobileHandler = this.changemobileHandler.bind(this);
-        this.changeemailHandler = this.changeemailHandler.bind(this);
-        this.changecompanynameHandler = this.changecompanynameHandler.bind(this);
-        this.changemessageHandler = this.changemessageHandler.bind(this);
-        this.saveOrUpdateEmployee = this.saveOrUpdateEmployee.bind(this);
-    }
+    this.state = {
+      inputData: {},
+    };
+  }
 
-    // step 3
-    // componentDidMount(){
+  saveOrUpdateEmployee = (e) => {
+    e.preventDefault();
+    console.log("Contact form data", this.state.inputData);
 
-    //     // step 4
-    //     // if(this.state.id === '_add'){
-    //     //     return
-    //     // }else{
-    //     //     EmployeeService.getEmployeeById(this.state.id).then( (res) =>{
-    //     //         let employee = res.data;
-    //     //         this.setState({name: employee.name,
-    //     //             mobile: employee.mobile,
-    //     //             email : employee.email,
-    //     //             company_name: employee.company_name,
-    //     //             message:employee.message
-    //     //         });
-    //     //     });
-    //     // }        
-    // }
-    saveOrUpdateEmployee = (e) => {
-        e.preventDefault();
-        let employee = {name: this.state.name, mobile: this.state.mobile, email: this.state.email, company_name: this.state.company_name, message: this.state.message};
-        console.log('employee => ' + JSON.stringify(employee));
+    const contactData = this.state.inputData;
+    console.log("employee => " + JSON.stringify(contactData));
 
-        // step 5
-        //if(this.state.id === '_add'){
-            EmployeeService.createEmployee(employee).then(res =>{
-                this.props.history.push('/employees');
-            });
-        //}else{
-           // EmployeeService.updateEmployee(employee, this.state.id).then( res => {
-              //  this.props.history.push('/employees');
-            //});
-        //}
-    }
-    
-    changenameHandler= (event) => {
-        this.setState({name: event.target.value});
-    }
+    EmployeeService.createEmployee(contactData).then((res) => {
+      this.props.history.push("/employees");
+    });
+  };
 
-    changemobileHandler= (event) => {
-        this.setState({mobile: event.target.value});
-    }
+  handleChange = (event) => {
+    this.state.inputData[event.target.name] = event.target.value;
+    this.setState({ inputData: this.state.inputData });
+  };
 
-    changeemailHandler= (event) => {
-        this.setState({email: event.target.value});
-    }
+  cancel() {
+    this.props.history.push("/employees");
+  }
 
-    changecompanynameHandler= (event) => {
-        this.setState({company_name: event.target.value});
-    }
+  getTitle() {
+    return <h3 className="text-center">Add Employee</h3>;
+  }
 
-    changemessageHandler= (event) => {
-        this.setState({message: event.target.value});
-    }
-
-    cancel(){
-        this.props.history.push('/employees');
-    }
-
-     getTitle(){
-    //     if(this.state.id === '_add'){
-             return <h3 className="text-center">Add Employee</h3>
-    //     }else{
-    //         return <h3 className="text-center">Update Employee</h3>
-    //     }
-    }
-    render() {
-        return (
-            <div>
-                <br></br>
-                   <div className = "container">
-                        <div className = "row">
-                            <div className = "card col-md-6 offset-md-3 offset-md-3">
-                                 {
-                                    this.getTitle()
-                                } 
-                                <div className = "card-body">
-                                    <form>
-                                        <div className = "form-group">
-                                            <label> Name: </label>
-                                            <input placeholder="Name" name="name" className="form-control" 
-                                                defaultValue={this.state.name} onChange={this.changenameHandler}/>
-                                        </div>
-                                        <div className = "form-group">
-                                            <label> Mobile: </label>
-                                            <input placeholder="Mobile" name="mobile" className="form-control" 
-                                                defaultValue={this.state.mobile} onChange={this.changemobileHandler}/>
-                                        </div>
-                                        <div className = "form-group">
-                                            <label> Email Id: </label>
-                                            <input placeholder="Email Address" name="email" className="form-control" 
-                                                defaultValue={this.state.email} onChange={this.changeemailHandler}/>
-                                        </div>
-                                        <div className = "form-group">
-                                            <label> Company Name: </label>
-                                            <input placeholder="Company Name" name="company_name" className="form-control" 
-                                                defaultValue={this.state.company_name} onChange={this.changecompanynameHandler}/>
-                                        </div>
-                                        <div className = "form-group">
-                                            <label> Message: </label>
-                                            <input placeholder="Message" name="message" className="form-control" 
-                                                defaultValue={this.state.message} onChange={this.changemessageHandler}/>
-                                        </div>
-
-                                        <button className="btn btn-success" onClick={this.saveOrUpdateEmployee}>Save</button>
-                                        <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{marginLeft: "10px"}}>Cancel</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                   </div>
+  render() {
+    return (
+      <div className="mt-4">
+        <div className="container">
+          <div className="row">
+            <div className="card pt-4 col-md-6 offset-md-3 offset-md-3">
+              {this.getTitle()}
+              <div className="card-body">
+                <form onSubmit={this.saveOrUpdateEmployee}>
+                  <div className="form-group">
+                    <label> Name: </label>
+                    <input
+                      placeholder="Name"
+                      name="name"
+                      className="form-control"
+                      value={this.state.name}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label> Mobile: </label>
+                    <input
+                      placeholder="Mobile"
+                      name="mobile"
+                      className="form-control"
+                      value={this.state.mobile}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label> Email Id: </label>
+                    <input
+                      placeholder="Email Address"
+                      name="email"
+                      className="form-control"
+                      value={this.state.email}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label> Company Name: </label>
+                    <input
+                      placeholder="Company Name"
+                      name="company"
+                      className="form-control"
+                      value={this.state.company_name}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label> Message: </label>
+                    <input
+                      placeholder="Message"
+                      name="message"
+                      className="form-control"
+                      value={this.state.message}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <input type="submit" className="btn btn-success" value="Save" />
+                  <button
+                    className="btn btn-danger"
+                    onClick={this.cancel.bind(this)}
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              </div>
             </div>
-        )
-    }
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
-export default CreateEmployeeComponent
+export default CreateEmployeeComponent;
